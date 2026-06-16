@@ -40,6 +40,35 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
+// ---- SYSTEM AUTOMATIC USER SEEDING START ----
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<TicketingPortal.Data.ApplicationDbContext>();
 
+        // Check karo agar Users table bilkul khali hai
+        if (!context.Users.Any())
+        {
+            context.Users.Add(new TicketingPortal.Models.USER_MODEL
+            {
+                FULL_NAME = "Rahul Kumar",
+                EMAIL = "rahul@acmecorp.in",
+                PASSWORD = "bhai123", // Testing ke liye plain text password
+                ROLE = "Admin"
+            });
+            context.SaveChanges();
+        }
+    }
+    catch (Exception ex)
+    {
+        // Agar koi dikkat aaye toh background mein handle ho jaye
+        Console.WriteLine("Data Seeding Error: " + ex.Message);
+    }
+}
+// ---- SYSTEM AUTOMATIC USER SEEDING END ----
+
+app.Run(); // Yeh line pehle se sabse aakhiri mein hogi
 
 app.Run();
