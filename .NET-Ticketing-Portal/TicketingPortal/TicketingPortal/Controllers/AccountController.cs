@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using TicketingPortal.Data;
 
 namespace TicketingPortal.Controllers
@@ -19,29 +20,46 @@ namespace TicketingPortal.Controllers
         public IActionResult Login() => View();
 
         [HttpPost]
-        public IActionResult Login(string email, string password)
+        public async Task<IActionResult> Login(string email, string password)
         {
-            // Ekdum dhyan se check karo: u.EMAIL == email aur u.PASSWORD == password hona chahiye
+            // 1. Database mein user dhoondho
             var user = _context.Users.FirstOrDefault(u => u.EMAIL == email && u.PASSWORD == password);
 
-            if (user != null)
+            // 2. Agar user na mile, toh wapas View par bhejo error message ke sath
+            if (user == null)
             {
-                var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, user.FULL_NAME),
-            new Claim(ClaimTypes.Email, user.EMAIL),
-            new Claim(ClaimTypes.Role, user.ROLE ?? "User")
-        };
-
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity)).Wait();
-
-                return RedirectToAction("Index", "Home");
+                ViewBag.ErrorMessage = "Invalid Email or Password!";
+                return View();
             }
 
-            ViewBag.ErrorMessage = "Invalid Email or Password!";
-            return View();
+            // 3. Agar user mil jaye, toh uski ID (Claims) banao
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.FULL_NAME),
+                new Claim(ClaimTypes.Email, user.EMAIL),
+                new Claim(ClaimTypes.Role, user.ROLE ?? "User") // Role wapas add kar diya
+            };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            // 4. Browser mein Cookie drop karo
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity));
+
+            // 5. Login ke baad seedhe Dashboard (Home/Index) par bhej do
+            return RedirectToAction("Index", "Home");
+        }
+
+        // --- NAYA FEATURE: LOGOUT ---
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            // Browser se cookie delete kar do
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            // Wapas login page par bhej do
+            return RedirectToAction("Login", "Account");
         }
     }
 }

@@ -10,8 +10,12 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Account/Login"; // Agar koi bina login ke aaye toh is page par bhej do
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(20); // Cookie ki life
+        options.LoginPath = "/Account/Login";
+
+        // YEH 3 LINES ADD KARNI HAIN LOCALHOST PAR COOKIE ALLOW KARNE KE LIYE:
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; // HTTP aur HTTPS dono par chalega
+        options.Cookie.SameSite = SameSiteMode.Lax; // Strict rules ko thoda relax karega
     });
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -28,18 +32,17 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseStaticFiles();
+
 app.UseRouting();
 
-app.UseAuthorization();
-
-app.MapStaticAssets();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    pattern: "{controller=Account}/{action=Login}/{id?}");
 // ---- SYSTEM AUTOMATIC USER SEEDING START ----
 using (var scope = app.Services.CreateScope())
 {
@@ -69,6 +72,5 @@ using (var scope = app.Services.CreateScope())
 }
 // ---- SYSTEM AUTOMATIC USER SEEDING END ----
 
-app.Run(); // Yeh line pehle se sabse aakhiri mein hogi
 
 app.Run();
