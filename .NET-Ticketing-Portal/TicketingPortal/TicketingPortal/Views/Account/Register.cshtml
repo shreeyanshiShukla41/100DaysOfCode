@@ -1,0 +1,40 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5 card p-4 border shadow-sm bg-dark text-white">
+            <h3 class="text-center mb-4 fw-bold">Create Account</h3>
+
+            @if (ViewBag.ErrorMessage != null)
+            {
+                <div class="alert alert-danger p-2 small text-center">@ViewBag.ErrorMessage</div>
+            }
+
+            <form asp-action="Register" method="post">
+                <div class="mb-3">
+                    <label class="form-label small text-secondary" for="fullName">Full Name</label>
+                    <input type="text" id="fullName" name="fullName" class="form-control" placeholder="Rahul Kumar" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small text-secondary" for="regEmail">Work Email</label>
+                    <input type="email" id="regEmail" name="email" class="form-control" placeholder="rahul@acmecorp.in" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small text-secondary" for="regPassword">Password</label>
+                    <input type="password" id="regPassword" name="password" class="form-control" placeholder="••••••••" required />
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold mt-3">Sign Up</button>
+            </form>
+            <div class="text-center mt-3 small">
+                <span class="text-secondary">Already have an account?</span> <a asp-action="Login" class="text-info text-decoration-none">Sign In</a>
+            </div>
+
+            <div class="text-center mt-3 small">
+                <span class="text-secondary">Already have an account?</span>
+                @Html.ActionLink("Sign In", "Login", "Account", null, new { @class = "text-info text-decoration-none" })
+            </div>
+        </div>
+    </div>
+</div>

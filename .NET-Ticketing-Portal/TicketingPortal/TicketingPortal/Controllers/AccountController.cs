@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using TicketingPortal.Data;
+using TicketingPortal.Models;
 
 namespace TicketingPortal.Controllers
 {
@@ -20,34 +22,42 @@ namespace TicketingPortal.Controllers
         public IActionResult Login() => View();
 
         [HttpPost]
-        public async Task<IActionResult> Login(string email, string password)
+        public async Task<IActionResult> Login(string email, string password, string rememberMe)
         {
-            // 1. Database mein user dhoondho
+            bool isPersistent = (!string.IsNullOrEmpty(rememberMe) && rememberMe.ToLower() == "true");
+
             var user = _context.Users.FirstOrDefault(u => u.EMAIL == email && u.PASSWORD == password);
 
-            // 2. Agar user na mile, toh wapas View par bhejo error message ke sath
             if (user == null)
             {
                 ViewBag.ErrorMessage = "Invalid Email or Password!";
                 return View();
             }
 
-            // 3. Agar user mil jaye, toh uski ID (Claims) banao
-            var claims = new List<Claim>
+            // --- CREDENTIALS REMEMBER LOGIC (EMAIL COOKIE) ---
+            if (isPersistent)
             {
-                new Claim(ClaimTypes.Name, user.FULL_NAME),
-                new Claim(ClaimTypes.Email, user.EMAIL),
-                new Claim(ClaimTypes.Role, user.ROLE ?? "User") // Role wapas add kar diya
-            };
+                // Agar remember me checked hai, toh email ko ek separate cookie mein 14 din ke liye save kar lo
+                CookieOptions cookieOptions = new CookieOptions
+                {
+                    Expires = DateTime.Now.AddDays(14),
+                    HttpOnly = false // False rakhenge taaki agar HTML/JS ko read karna ho toh dikh sake
+                };
+                Response.Cookies.Append("RememberedEmail", email, cookieOptions);
+            }
+            else
+            {
+                // Agar unchecked hai, toh agar purani koi email cookie padi hai toh use delete kar do
+                Response.Cookies.Delete("RememberedEmail");
+            }
 
+            // Baki aapka authentication code bilkul same rahega...
+            var claims = new List<Claim> { new Claim(ClaimTypes.Name, user.FULL_NAME), new Claim(ClaimTypes.Email, user.EMAIL) };
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var authProperties = new AuthenticationProperties { IsPersistent = isPersistent, ExpiresUtc = isPersistent ? DateTimeOffset.UtcNow.AddDays(14) : null };
 
-            // 4. Browser mein Cookie drop karo
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity));
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
-            // 5. Login ke baad seedhe Dashboard (Home/Index) par bhej do
             return RedirectToAction("Index", "Home");
         }
 
@@ -60,6 +70,39 @@ namespace TicketingPortal.Controllers
 
             // Wapas login page par bhej do
             return RedirectToAction("Login", "Account");
+        }
+
+        // 1. GET: Register Page dikhane ke liye
+        [HttpGet]
+        public IActionResult Register() => View();
+
+        // 2. POST: Register Form ka data database mein save karne ke liye
+        [HttpPost]
+        public async Task<IActionResult> Register(string fullName, string email, string password)
+        {
+            // Check karo ki kahin ye email pehle se toh register nahi hai
+            var existingUser = _context.Users.FirstOrDefault(u => u.EMAIL == email);
+            if (existingUser != null)
+            {
+                ViewBag.ErrorMessage = "Email is already registered!";
+                return View();
+            }
+
+            // Naya user object banao
+            var newUser = new USER_MODEL
+            {
+                FULL_NAME = fullName,
+                EMAIL = email,
+                PASSWORD = password, // Real app mein isey hash karna chahiye, abhi testing ke liye plain text hai
+                ROLE = "User" // Default role
+            };
+
+            // Database mein add aur save karo (MERN mein User.create jaisa)
+            _context.Users.Add(newUser);
+            await _context.SaveChangesAsync();
+
+            // Register hote hi seedhe Login page par bhej do
+            return RedirectToAction("Login");
         }
     }
 }

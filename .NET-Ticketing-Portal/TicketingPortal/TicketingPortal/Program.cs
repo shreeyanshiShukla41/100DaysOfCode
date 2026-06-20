@@ -11,7 +11,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(options =>
     {
         options.LoginPath = "/Account/Login";
-
+        options.ExpireTimeSpan = TimeSpan.FromDays(14);
+        options.SlidingExpiration = true;
         // YEH 3 LINES ADD KARNI HAIN LOCALHOST PAR COOKIE ALLOW KARNE KE LIYE:
         options.Cookie.HttpOnly = true;
         options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; // HTTP aur HTTPS dono par chalega
