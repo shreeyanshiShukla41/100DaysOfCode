@@ -79,8 +79,26 @@ public class Dsa1{
         return rev;
     }
 
+    // 20-6-2026
     public static int rotateNum(int n){
+        // Decimal number rotation
+        if(n==0) return 0;
         
+        int len=(int)Math.log10(Math.abs(n))+1;
+        // Math.log10 always gives a pattern 
+        // Math.log10(1) = 0  Math.log10(10) = 1 Math.log10(100) = 2 Math.log10(1000) = 3
+        k=k%len;
+  
+        if(k<0){
+           k=k+len;
+        }
+        int d1=(int)Math.pow(10,k);
+        int d2=(int)Math.pow(10,len-k);
+        int left=n/d1;
+        int right=n%d1;
+        int rev=right*d2+left;
+        return rev;
     }
+    
   }
 }
