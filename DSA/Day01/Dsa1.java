@@ -99,6 +99,34 @@ public class Dsa1{
         int rev=right*d2+left;
         return rev;
     }
+
+    // 21-6-2026
+    public static void gcd(int n1,int n2){
+        int smaller=Math.min(n1,n2);
+        
+        int gcd=0;
+        for(int i=1;i<=smaller;i++){
+            if(n1%i==0 && n2%i==0){
+                gcd=Math.max(i,gcd);
+            }
+        }
+        System.out.println(gcd);
+    }
+    public static void gcd1(int a, int b){
+        while(b!=0){
+           int gcd=a%b;
+            a=b;
+            b=gcd;
+        }
+        System.out.println(a);
+    }
+    
+    public static int gcd2(int a,int b){
+        if(b==0){
+            return a;
+        }
+        return gcd2(b,a%b);
+    }
     
   }
 }
