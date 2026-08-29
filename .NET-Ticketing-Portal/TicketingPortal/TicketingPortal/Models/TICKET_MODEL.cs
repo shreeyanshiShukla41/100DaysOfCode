@@ -13,13 +13,15 @@
 
         public string AssignedTo { get; set; } = string.Empty;
 
-        public string Priority { get; set; } = "Medium";
+        public string Priority { get; set; } = "MEDIUM";
 
         public string ProjectName { get; set; } = string.Empty;
 
         public string Category { get; set; } = string.Empty;
 
         public int EstimatedHours { get; set; } = 0;
+
+        public string? AttachmentPath { get; set; }
 
     }
 }

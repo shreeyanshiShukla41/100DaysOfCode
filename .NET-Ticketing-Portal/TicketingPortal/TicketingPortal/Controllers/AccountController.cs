@@ -51,8 +51,7 @@ namespace TicketingPortal.Controllers
                 Response.Cookies.Delete("RememberedEmail");
             }
 
-            // Baki aapka authentication code bilkul same rahega...
-            var claims = new List<Claim> { new Claim(ClaimTypes.Name, user.FULL_NAME), new Claim(ClaimTypes.Email, user.EMAIL) };
+            var claims = new List<Claim> { new Claim(ClaimTypes.Name, user.FULL_NAME), new Claim(ClaimTypes.Email, user.EMAIL), new Claim(ClaimTypes.Role, user.ROLE) };
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = new AuthenticationProperties { IsPersistent = isPersistent, ExpiresUtc = isPersistent ? DateTimeOffset.UtcNow.AddDays(14) : null };
 

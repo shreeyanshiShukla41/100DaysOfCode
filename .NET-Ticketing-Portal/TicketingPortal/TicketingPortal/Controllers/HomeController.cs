@@ -1,15 +1,27 @@
-using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-using TicketingPortal.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
+using TicketingPortal.Data;
+using TicketingPortal.Models;
 
 namespace TicketingPortal.Controllers
 {
     [Authorize]
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly ApplicationDbContext _context;
+
+        public HomeController(ApplicationDbContext context)
         {
+            _context = context;
+        }
+        public async Task<IActionResult> Index()
+        {
+            var latestAnnouncement = await _context.Announcements
+        .Where(a => a.IsActive)
+        .OrderByDescending(a => a.CreatedDate)
+        .FirstOrDefaultAsync();
             return View();
         }
 

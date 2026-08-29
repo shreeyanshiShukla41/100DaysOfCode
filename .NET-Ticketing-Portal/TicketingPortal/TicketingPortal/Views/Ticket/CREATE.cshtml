@@ -1,0 +1,115 @@
+﻿@{
+    ViewData["Title"] = "CREATE";
+}
+
+@model TicketingPortal.Models.TICKET_MODEL
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="~/css/Common.css" />
+
+<div class="container mt-5 mb-5 d-flex justify-content-center">
+    <div class="card border rounded-4 p-4 p-md-5"
+         style="max-width: 680px; width: 100%;
+        background: #afbfc7;
+        border-color: #e2e8f0 !important;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);">
+
+        <!-- Header -->
+        <div class="border-bottom pb-3 mb-4 d-flex align-items-center justify-content-between" style="border-color: #f1f5f9 !important;">
+            <div>
+                <h3 class="fw-bold mb-1" style="color: #1e293b;">Create Ticket</h3>
+                <p class="small mb-0" style="color: #64748b;">Fill in the details to submit a new issue ticket</p>
+            </div>
+            <div class="rounded-3 d-flex align-items-center justify-content-center"
+                 style="width: 40px; height: 40px; background: #eff6ff; color: #2563eb;">
+                <i class="bi bi-ticket-perforated fs-5"></i>
+            </div>
+        </div>
+
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+
+            <!-- Title -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold small mb-1" style="color: #475569;">Ticket Title</label>
+                @Html.TextBoxFor(m => m.Title, new
+                {
+                    @class = "form-control",
+                    placeholder = "Brief summary of the issue",
+                    style = "background-color: #f8fafc; border: 1px solid #e2e8f0; color: #1e293b; border-radius: 8px; padding: 10px 14px;"
+                })
+            </div>
+
+            <!-- Description -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold small mb-1" style="color: #475569;">Description</label>
+                @Html.TextAreaFor(m => m.Description, new
+                {
+                    @class = "form-control",
+                    rows = 3,
+                    placeholder = "Provide a detailed explanation of the issue",
+                    style = "background-color: #f8fafc; border: 1px solid #e2e8f0; color: #1e293b; border-radius: 8px; padding: 10px 14px;"
+                })
+            </div>
+
+            <!-- Category & Priority -->
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold small mb-1" style="color: #475569;">Category</label>
+                    @Html.DropDownListFor(m => m.Category, (SelectList)ViewBag.CategoryList, "Select Category", new
+                    {
+                        @class = "form-select",
+                        style = "background-color: #f8fafc; border: 1px solid #e2e8f0; color: #1e293b; border-radius: 8px; padding: 10px 14px;"
+                    })
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold small mb-1" style="color: #475569;">Priority</label>
+                    @Html.DropDownListFor(m => m.Priority, (SelectList)ViewBag.PriorityList, "Select Priority", new
+                    {
+                        @class = "form-select",
+                        style = "background-color: #f8fafc; border: 1px solid #e2e8f0; color: #1e293b; border-radius: 8px; padding: 10px 14px;"
+                    })
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold small mb-1" style="color: #475569;">Status</label>
+                @Html.DropDownListFor(m => m.Status, (SelectList)ViewBag.StatusList, "Select Status", new
+                {
+                    @class = "form-select",
+                    style = "background-color: #f8fafc; border: 1px solid #e2e8f0; color: #1e293b; border-radius: 8px; padding: 10px 14px;"
+                })
+            </div>
+
+            <!-- Attachment Zone -->
+            <div class="mb-4 p-3 rounded-3"
+                 style="background: #f8fafc; border: 1px dashed #cbd5e1;">
+                <label for="attachmentFile" class="form-label fw-semibold small mb-1" style="color: #475569;">
+                    <i class="bi bi-paperclip me-1 text-primary"></i> Attachment
+                </label>
+                <input type="file" name="attachmentFile" id="attachmentFile"
+                       class="form-control"
+                       style="background-color: #ffffff; border: 1px solid #e2e8f0; color: #64748b;" />
+                <div class="small mt-1" style="color: #94a3b8; font-size: 12px;">
+                    Upload log files, screenshots, or documents (optional).
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="d-flex justify-content-end gap-2 pt-2">
+                <a href="@Url.Action("Index", "Ticket")"
+                   class="btn px-4 fw-medium"
+                   style="background: #ffffff; border: 1px solid #cbd5e1; color: #475569; border-radius: 8px;">
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="btn px-4 fw-semibold text-white"
+                        style="background: #2563eb; border: none; border-radius: 8px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);">
+                    Create Ticket
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>

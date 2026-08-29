@@ -1,0 +1,73 @@
+﻿@model IEnumerable<TicketingPortal.Models.TICKET_MODEL>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Ticket List</h1>
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-white mb-1">Tickets Registry</h2>
+            <p class="text-muted small mb-0">Manage corporate support cases and platform dispatches.</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary fw-semibold"><i class="bi bi-patch-plus-fill me-2"></i>Create Ticket</a>
+    </div>
+
+    <div class="card bg-dark border-secondary overflow-hidden shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover mb-0 align-middle">
+                <thead class="table-light text-uppercase" style="font-size: 0.75rem;">
+                    <tr>
+                        <th class="ps-4">ID</th>
+                        <th>Subject Title</th>
+                        <th>Raised By</th>
+                        <th>Date Issued</th>
+                        <th>Priority</th>
+                        <th>Status Badge</th>
+                        <th class="text-center pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-5 text-muted">No support tickets found on your account.</td>
+                        </tr>
+                    }
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-4 text-secondary">#@item.Id</td>
+                            <td class="fw-semibold text-white">@item.Title</td>
+                            
+                            <td class="text-muted small">@item.CreatedDate.ToString("dd MMM yyyy, hh:mm tt")</td>
+                            <td>
+                                @if (item.Priority == "High")
+                                {
+                                    <span class="badge bg-danger text-uppercase">High</span>
+                                }
+                                else if (item.Priority == "Medium")
+                                {
+
+                                    <span class="badge bg-warning text-dark text-uppercase">Medium</span>
+                                }
+                                else
+                                {
+
+                                    <span class="badge bg-secondary text-uppercase">Low</span>
+                                }
+                            </td>
+                            <td>
+                                <span class="badge border border-info text-info bg-transparent">@item.Status</span>
+                            </td>
+                            <td class="text-center pe-4">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-light btn-sm px-3"><i class="bi bi-pencil-square me-1"></i>Edit</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

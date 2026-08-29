@@ -18,6 +18,7 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
@@ -29,7 +30,10 @@
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item d-flex align-items-center me-3">
-                                <span class="text-light me-2">Welcome, <strong>@User.Identity.Name</strong></span>
+                                <div class="d-flex flex-column">
+                                <span class="text-light p-1">Welcome, <strong>@User.Identity.Name</strong></span>
+                                <span class="text-light p-1" id="current-date"></span>
+                                </div>
                                 <span class="badge bg-primary text-uppercase" style="font-size: 0.75rem;">
                                     @User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Role)?.Value
                                 </span>
@@ -66,3 +70,10 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+<script>
+    const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+    const today = new Date().toLocaleDateString('en-GB', options);
+    // Output: "Thursday, 20 August 2026"
+    document.getElementById('current-date').textContent = today;
+</script>
