@@ -1,0 +1,60 @@
+class ServiceBased{
+  public static void SecondLargest(){
+     int a[]={9,10,3,8,2,5};
+     int max=a[0], SecondLargest=-1;
+
+     for(int i=1;i<a.length;i++){
+      if(max<a[i]){
+        SecondLargest=max;
+       max=a[i];
+      }
+      
+      if(a[i]<max &&(SecondLargest=-1 || a[i]>SecondLargest)){
+        SecondLargest=a[i];
+      }
+     }
+     print SecondLargest;
+  }
+
+  public static void moveAllZeroesToEnd(int a[]){
+    int j=0,c=0;
+
+    for(int i=0;i<a.length;i++){
+      if(a[i]!=0){
+        a[j]=a[i];
+        j++;
+        c=0;
+      }
+    }
+
+    for(int p=c;p<a.length;i++){
+      a[p]=0;
+    }
+    print a;
+  }
+
+  public static void findMissingNum(int a[]){
+    int n=a.length+1;
+    int sumn= n*(n+1)/2;
+
+    int suma=0;
+
+    for(int i=0;i<a.length;i++){
+      suma+=a[i];
+    }
+    return sumn-suma;
+  }
+
+   public int removeDuplicates(int[] nums) {
+        int j=1,i=1;
+
+        while(i<nums.length){
+            if(nums[i-1]!=nums[i]){
+                nums[j++]=nums[i];
+            }
+              i++;
+        }
+       
+        return j;
+    }
+}
