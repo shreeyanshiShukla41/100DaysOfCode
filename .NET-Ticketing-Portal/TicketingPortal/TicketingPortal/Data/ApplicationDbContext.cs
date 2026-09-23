@@ -11,8 +11,6 @@ namespace TicketingPortal.Data
             : base(options)
         {
         }
-
-        public DbSet<Announcement> Announcements { get; set; }
         // This DbSet creates a "Tickets" table in SQL Server based on our C# Ticket model
         public DbSet<TICKET_MODEL> Tickets { get; set; }
         public DbSet<USER_MODEL> Users { get; set; }

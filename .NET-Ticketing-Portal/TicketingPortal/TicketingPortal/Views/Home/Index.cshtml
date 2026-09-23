@@ -3,32 +3,6 @@
 }
 
 <div class="container mt-4">
-   <h1>Index</h1>
-    <!-- 🟦 HR Global Broadcast Alert Banner -->
-    <div class="card border-0 mb-4 p-3 rounded-3"
-         style="background-color: #1e1b4b; border: 1px solid #312e81 !important;">
-        <div class="d-flex align-items-start gap-3">
-            <!-- Megaphone / Broadcast Icon -->
-            <div class="rounded-2 d-flex align-items-center justify-content-center flex-shrink-0"
-                 style="width: 36px; height: 36px; background-color: #312e81; color: #a5b4fc;">
-                <i class="bi bi-megaphone-fill"></i>
-            </div>
-
-            <!-- Announcement Content -->
-            <div class="flex-grow-1">
-                @* <p class="mb-1 text-white fw-medium" style="font-size: 14px; line-height: 1.4;">
-                    @(Model.Announcement?.Message ?? "Office will remain closed on 15th Aug (Independence Day). WFH approved for 16th Aug for all teams.")
-                </p>
-                <div class="small" style="color: #a5b4fc; font-size: 12px;">
-                    Posted by @(Model.Announcement?.PostedBy ?? "HR") · @(Model.Announcement?.CreatedDate.ToString("dd MMM yyyy") ?? "18 Aug 2026")
-                </div> *@
-            </div>
-
-            <!-- Optional Dismiss / Pin Button -->
-            <button type="button" class="btn btn-sm text-secondary p-0 border-0" title="Dismiss">
-                <i class="bi bi-x-lg" style="color: #818cf8; font-size: 14px;"></i>
-            </button>
-        </div>
-    </div>
+   
     @Html.ActionLink("Create Ticket", "CREATE", "Ticket", null, new { @class = "btn btn-primary" })
 </div>

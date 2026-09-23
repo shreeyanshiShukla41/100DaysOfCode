@@ -9,9 +9,8 @@ using TicketingPortal.Models;
 public class TicketController : Controller
 {
     private readonly ApplicationDbContext _context;
-    private readonly IWebHostEnvironment _environment; // Naya environment variable
+    private readonly IWebHostEnvironment _environment; 
 
-    // Constructor mein IWebHostEnvironment ko inject kiya
     public TicketController(ApplicationDbContext context, IWebHostEnvironment environment)
     {
         _context = context;
@@ -46,20 +45,17 @@ public class TicketController : Controller
             new SelectListItem { Value = "ETL/DATA INTEGRATION", Text = "ETL/DATA INTEGRATION" },
             new SelectListItem { Value = "OTHER", Text = "OTHER" }
         }, "Value", "Text");
-        
     }
-
 
     public ActionResult CREATE()
     {
-        Dropdowns(); // Dropdowns ko populate karne ke liye method call karo
-
-
+        Dropdowns(); 
         return View();
     }
 
+
     [HttpPost]
-    public async Task<IActionResult> CREATE(TICKET_MODEL ticket, IFormFile? attachmentFile) // <-- attachmentFile parameter pakda
+    public async Task<IActionResult> CREATE(TICKET_MODEL ticket, IFormFile? attachmentFile) 
     {
         // 1. Check karo kya user ne sach mein koi file select ki hai?
         if (attachmentFile != null && attachmentFile.Length > 0)
@@ -93,12 +89,9 @@ public class TicketController : Controller
         {
             _context.Tickets.Add(ticket);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+            return View();
         }
-
         Dropdowns(); // Agar model state invalid hai, toh dropdowns ko dobara populate karo
         return View(ticket);
     }
-   
-
 }

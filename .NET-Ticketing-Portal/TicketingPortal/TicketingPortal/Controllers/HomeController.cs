@@ -18,10 +18,10 @@ namespace TicketingPortal.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var latestAnnouncement = await _context.Announcements
-        .Where(a => a.IsActive)
-        .OrderByDescending(a => a.CreatedDate)
-        .FirstOrDefaultAsync();
+        //    var latestAnnouncement = await _context.Announcements
+        //.Where(a => a.IsActive)
+        //.OrderByDescending(a => a.CreatedDate)
+        //.FirstOrDefaultAsync();
             return View();
         }
 
